@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Todo List</title>
+</head>
+<body>
+  <h1>Todo List</h1>
+
+  <ul id="todoList"></ul>
+
+  <form id="addTodoForm">
+    <input type="text" id="todoText" placeholder="Enter a new todo">
+    <button type="submit">Add Todo</button>
+  </form>
+
+  <script>
+    function listTodos() {
+      fetch('http://localhost:3000/todos')
+        .then(response => response.json())
+        .then(todos => {
+          const todoList = document.getElementById('todoList');
+          todoList.innerHTML = '';
+
+          todos.forEach((todo, index) => {
+            const listItem = document.createElement('li');
+            listItem.innerHTML = `
+              ${todo}
+              <button onclick="editTodo(${index})">Edit</button>
+              <button onclick="deleteTodo(${index})">Delete</button>
+            `;
+            todoList.appendChild(listItem);
+          });
+        });
+    }
+
+    document.getElementById('addTodoForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const todoText = document.getElementById('todoText').value;
+
+      fetch('http://localhost:3000/addTodo', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ todo: todoText })
+      })
+      .then(() => {
+        listTodos();
+        document.getElementById('todoText').value = '';
+      });
+    });
+
+    function editTodo(index) {
+      const updatedTodo = prompt('Enter the updated todo:');
+      if (updatedTodo !== null) {
+        fetch('http://localhost:3000/editTodo', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ index: index, todo: updatedTodo })
+        })
+        .then(() => {
+          listTodos();
+        });
+      }
+    }
+
+    function deleteTodo(index) {
+      if (confirm('Are you sure you want to delete this todo?')) {
+        fetch('http://localhost:3000/deleteTodo', {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ index: index })
+        })
+        .then(() => {
+          listTodos();
+        });
+      }
+    }
+
+    listTodos();
+  </script>
+</body>
+</html>
+

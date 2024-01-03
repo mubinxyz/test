@@ -1,0 +1,160 @@
+<!-- I write all html, css and js code in one file for ease . -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>todo list</title>
+  </head>
+  <body>
+    <input
+      autofocus
+      onkeydown="handleEnterKey(event)"
+      type="text"
+      id="todo-title"
+    />
+    <button onclick="addTodo()">Add Todo</button>
+    <div id="todo-list"></div>
+
+    <script>
+      // I use MVC for this app
+
+      // Model
+      let todos = ["hang out with friends", "study university lessons"];
+      render();
+
+      // crates a todo
+      function createTodo(title) {
+        todos.push(title);
+      }
+
+      // deletes a todo
+      function deleteTodo(index) {
+        todos.splice(index, 1);
+      }
+      // ...
+
+      // View
+      function render() {
+        document.querySelector("#todo-list").innerHTML = "";
+
+        todos.forEach((todo, index) => {
+          const element = document.createElement("div");
+          element.innerText = todo;
+
+          // checkbox
+          const inputCheckbox = document.createElement("input");
+          inputCheckbox.type = "checkbox";
+          inputCheckbox.dataset.isChecked = "false";
+          inputCheckbox.style.marginLeft = "1rem";
+          inputCheckbox.onchange = () => {
+            inputCheckbox.dataset.isChecked = inputCheckbox.checked
+              ? "true"
+              : "false";
+          };
+          element.prepend(inputCheckbox);
+
+          // edit button
+          const editButton = document.createElement("button");
+          editButton.innerText = "Edit";
+          editButton.style.marginLeft = "1rem";
+          editButton.setAttribute("data-index", index);
+          editButton.addEventListener("click", () => editTodo(event));
+          element.appendChild(editButton);
+
+          // delete button
+          const deleteButton = document.createElement("button");
+          deleteButton.innerText = "delete";
+          deleteButton.style.marginLeft = "1rem";
+          deleteButton.addEventListener("click", () => removeTodo(index));
+          element.appendChild(deleteButton);
+
+          // add to #todo-list
+          const todoList = document.querySelector("#todo-list");
+          todoList.appendChild(element);
+        });
+      }
+
+      // controller
+
+      // add todo
+      addTodo = () => {
+        const textbox = document.querySelector("#todo-title");
+        const title = textbox.value;
+
+        if (title !== "") {
+          createTodo(title);
+        } else {
+          alert("you have to write something!");
+        }
+
+        render();
+        textbox.value = "";
+      };
+
+      // remove a todo
+      function removeTodo(index) {
+        deleteTodo(index);
+
+        render();
+      }
+      // on enter key trigor, add todo
+      function handleEnterKey(event) {
+        if (event.key === "Enter") {
+          addTodo();
+        }
+      }
+
+      // edit a todo
+      function editTodo(event) {
+        const index = event.target.getAttribute("data-index");
+        const todoText = todos[index];
+
+        // input for editing todo
+        const editingInput = document.createElement("input");
+        editingInput.type = "text";
+        editingInput.value = todoText;
+
+        // confirm change button
+        const confirmButton = document.createElement("button");
+        confirmButton.innerText = "Confirm";
+        confirmButton.style.margin = "0 1rem";
+        confirmButton.addEventListener("click", () =>
+          confirmChangeTodo(index, editingInput)
+        );
+
+        // cancel editing mode button
+        const cancelButton = document.createElement("button");
+        cancelButton.innerText = "Cancel";
+        cancelButton.style.margin = "0 1rem";
+        cancelButton.addEventListener("click", () =>
+          cancelEditingButton(index, todoText)
+        );
+
+        // display these editing things
+        const element = event.target.parentNode;
+        element.innerHTML = "";
+        element.appendChild(editingInput);
+        element.appendChild(confirmButton);
+        element.appendChild(cancelButton);
+        editingInput.focus();
+      }
+
+      // confirm changetodo button
+      function confirmChangeTodo(index, editingInput) {
+        const editingText = editingInput.value.trim();
+
+        if (editingText !== "") {
+          todos[index] = editingText;
+          render();
+        }
+      }
+
+      // cancel editing button
+      function cancelEditingButton(index, originalText) {
+        todos[index] = originalText;
+        render();
+      }
+    </script>
+  </body>
+</html>
