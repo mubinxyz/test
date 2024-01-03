@@ -1,13 +1,17 @@
 const express = require("express");
 const fs = require("fs");
+const cors = require("cors");
 
 const app = express();
-const PORT = 3000;
+const PORT = 4000;
 
 let todos = [];
 
 // Middleware to handle JSON data in requests
 app.use(express.json());
+
+// another middle ware
+app.use(cors());
 
 // Function to save todos to a JSON file
 const saveTodosToFile = () => {
