@@ -16,7 +16,7 @@
 
   <script>
     function listTodos() {
-      fetch('http://localhost:3000/todos')
+      fetch('http://localhost:4000/todos')
         .then(response => response.json())
         .then(todos => {
           const todoList = document.getElementById('todoList');
@@ -38,7 +38,7 @@
       event.preventDefault();
       const todoText = document.getElementById('todoText').value;
 
-      fetch('http://localhost:3000/addTodo', {
+      fetch('http://localhost:4000/addTodo', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -54,7 +54,7 @@
     function editTodo(index) {
       const updatedTodo = prompt('Enter the updated todo:');
       if (updatedTodo !== null) {
-        fetch('http://localhost:3000/editTodo', {
+        fetch('http://localhost:4000/editTodo', {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json'
@@ -69,7 +69,7 @@
 
     function deleteTodo(index) {
       if (confirm('Are you sure you want to delete this todo?')) {
-        fetch('http://localhost:3000/deleteTodo', {
+        fetch('http://localhost:4000/deleteTodo', {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json'
