@@ -1,10 +1,17 @@
-const http = require("http");
-const { readFile, writeFile } = require("fs");
+const express = require("express");
+const fs = require("fs");
 
+const app = express();
+const PORT = 3000;
+
+let todos = [];
+
+// Middleware to handle JSON data in requests
+app.use(express.json());
 
 // Function to save todos to a JSON file
 const saveTodosToFile = () => {
-  writeFile("todos.json", JSON.stringify(todos), (err) => {
+  fs.writeFile("todos.json", JSON.stringify(todos), (err) => {
     if (err) {
       console.error("Error writing to file:", err);
     } else {
@@ -15,7 +22,7 @@ const saveTodosToFile = () => {
 
 // Function to load todos from the JSON file
 const loadTodosFromFile = () => {
-  readFile("todos.json", "utf8", (err, data) => {
+  fs.readFile("todos.json", "utf8", (err, data) => {
     if (err) {
       console.error("Error reading file:", err);
     } else {
@@ -32,75 +39,53 @@ const loadTodosFromFile = () => {
 // Load initial todos from file on server start
 loadTodosFromFile();
 
-const server = http.createServer((req, res) => {
-  const { pathname, query } = parse(req.url, true);
+// GET route to fetch all todos
+app.get("/todos", (req, res) => {
+  res.json(todos);
+});
 
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+// POST route to add a new todo
+app.post("/addTodo", (req, res) => {
+  const { todo } = req.body;
+  todos.push(todo);
+  saveTodosToFile();
+  res.status(201).send("Todo added successfully");
+});
 
-  if (req.method === "GET" && pathname === "/todos") {
-    res.writeHead(200, { "Content-Type": "application/json" });
-    res.end(JSON.stringify(todos));
-  } else if (req.method === "POST" && pathname === "/addTodo") {
-    let body = "";
-    req.on("data", (chunk) => {
-      body += chunk.toString();
-    });
-    req.on("end", () => {
-      const { todo } = JSON.parse(body);
-      todos.push(todo);
-      saveTodosToFile();
-      res.writeHead(201, { "Content-Type": "text/plain" });
-      res.end("Todo added successfully");
-    });
-  } else if (req.method === "PUT" && pathname === "/editTodo") {
-    let body = "";
-    req.on("data", (chunk) => {
-      body += chunk.toString();
-    });
-    req.on("end", () => {
-      const { index, todo } = JSON.parse(body);
-      if (index >= 0 && index < todos.length) {
-        todos[index] = todo;
-        saveTodosToFile();
-        res.writeHead(200, { "Content-Type": "text/plain" });
-        res.end("Todo updated successfully");
-      } else {
-        res.writeHead(404, { "Content-Type": "text/plain" });
-        res.end("Todo not found");
-      }
-    });
-  } else if (req.method === "DELETE" && pathname === "/deleteTodo") {
-    let body = "";
-    req.on("data", (chunk) => {
-      body += chunk.toString();
-    });
-    req.on("end", () => {
-      const { index } = JSON.parse(body);
-      if (index >= 0 && index < todos.length) {
-        todos.splice(index, 1);
-        saveTodosToFile();
-        res.writeHead(200, { "Content-Type": "text/plain" });
-        res.end("Todo deleted successfully");
-      } else {
-        res.writeHead(404, { "Content-Type": "text/plain" });
-        res.end("Todo not found");
-      }
-    });
-  } else if (req.method === "OPTIONS") {
-    res.writeHead(200);
-    res.end();
-    return;
+// PUT route to edit a todo
+app.put("/editTodo", (req, res) => {
+  const { index, todo } = req.body;
+  if (index >= 0 && index < todos.length) {
+    todos[index] = todo;
+    saveTodosToFile();
+    res.send("Todo updated successfully");
   } else {
-    res.writeHead(404, { "Content-Type": "text/plain" });
-    res.end("Endpoint not found");
+    res.status(404).send("Todo not found");
   }
 });
 
-const hostname = '127.0.0.1';
-const PORT = 3000;
+// DELETE route to delete a todo
+app.delete("/deleteTodo", (req, res) => {
+  const { index } = req.body;
+  if (index >= 0 && index < todos.length) {
+    todos.splice(index, 1);
+    saveTodosToFile();
+    res.send("Todo deleted successfully");
+  } else {
+    res.status(404).send("Todo not found");
+  }
+});
 
-server.listen(PORT, () => {
-  console.log(`Server running on port http://${hostname}:${PORT}/`);
+// OPTIONS route to handle pre-flight requests
+app.options("*", (req, res) => {
+  res.sendStatus(200);
+});
+
+// Route not found
+app.use((req, res) => {
+  res.status(404).send("Endpoint not found");
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running on port http://localhost:${PORT}/`);
 });
