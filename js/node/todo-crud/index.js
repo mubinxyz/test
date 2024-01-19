@@ -80,10 +80,10 @@ app.delete("/deleteTodo", (req, res) => {
   }
 });
 
-// OPTIONS route to handle pre-flight requests
-app.options("*", (req, res) => {
-  res.sendStatus(200);
-});
+// // OPTIONS route to handle pre-flight requests
+// app.options("*", (req, res) => {
+//   res.sendStatus(200);
+// });
 
 // Route not found
 app.use((req, res) => {
