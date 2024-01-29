@@ -1,5 +1,12 @@
 const { Router } = require("express");
 
+const {
+  getUsers,
+  findUser,
+  createUser,
+  deleteUser,
+} = require("../../../../services/users");
+
 const router = Router();
 
 router.get("/", getUsers);
