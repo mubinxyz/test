@@ -1,15 +1,19 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
+const MongoStore = require("connect-mongo");
+const passport = require("passport");
+require("./strategies/local");
+
+// Routes
 const groceriesRoute = require("./routes/groceries");
 const marketsRoute = require("./routes/markets");
 const authRoute = require("./routes/auth");
 
-require('./database')
+require("./database");
 
 app = express();
 const PORT = 3001;
-
 
 app.use(express.json());
 app.use(express.urlencoded());
@@ -19,6 +23,9 @@ app.use(
     secret: "ADFKLAJHFDKLHFAKFDLAKJFH;KJ",
     resave: false,
     saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: 'mongodb://localhost:27017/expressjs_tutorial',
+    })
   })
 );
 
@@ -26,11 +33,17 @@ app.use((req, res, next) => {
   console.log(`${req.method}:${req.url}`);
   next();
 });
+app.use((req, res, next) => {
+  next();
+});
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use("/api/v1/auth", authRoute);
 
 app.use((req, res, next) => {
-  req.session.user ? next() : res.send(401);
+  req.user ? next() : res.send(401);
 });
 
 app.use("/api/v1/groceries", groceriesRoute);
