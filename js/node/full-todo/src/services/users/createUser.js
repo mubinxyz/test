@@ -15,5 +15,9 @@ const createUser = async (req, res) => {
     res.status(201).json({ status: "201", newUser });
   } catch (err) {
     console.log(err);
+    if (!newUser)
+      return res.status(500).json({ error: "Enternal server error" });
   }
 };
+
+module.exports = createUser;
