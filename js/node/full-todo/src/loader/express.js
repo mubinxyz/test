@@ -1,29 +1,28 @@
 const express = require("express");
 const routes = require("../api/routes");
-require("dotenv").config({ path: "../.env" });
+require("dotenv").config({ path: "../../.env" });
 const cors = require("cors");
-const path = require("path");
+
+require("../database");
 
 const expressLoader = async (app) => {
-  app.use(express.static(path.join(__dirname, "../media")));
   app.use(
     cors({
       origin: "*",
     })
   );
+  app.use((req, res, next) => {
+    console.log(`${req.method}:${req.url}`);
+    next();
+  });
+
   app.use(express.json());
   app.use("/api", routes());
 
-  app.listen(process.env.PORT, () => {
-    console.log(`on port ${process.env.PORT}`);
+  PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => {
+    console.log(`on port ${PORT}`);
   });
-
-  app.use((req, res, next) => {
-    const err = new ApiError(404, "Not Found");
-    next(err);
-  });
-
-  app.use(errorHandler);
 };
 
 module.exports = expressLoader;

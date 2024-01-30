@@ -3,7 +3,6 @@ const { Router } = require("express");
 const {
   getTodos,
   getTodoById,
-  getUserTodos,
   createTodoForUser,
   updateTodo,
   deleteTodo,
@@ -14,8 +13,6 @@ const router = Router();
 router.get("/", getTodos);
 
 router.get("/:id", getTodoById);
-
-router.get("/:username", getUserTodos);
 
 router.post("/:username", createTodoForUser);
 

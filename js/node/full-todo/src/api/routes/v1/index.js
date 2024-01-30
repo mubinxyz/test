@@ -7,6 +7,7 @@ const v1Loader = () => {
   const router = Router();
   router.use("/users", usersRoute);
   router.use("/todos", todosRoute);
+  return router;
 };
 
 module.exports = v1Loader;
