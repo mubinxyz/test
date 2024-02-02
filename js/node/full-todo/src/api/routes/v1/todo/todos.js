@@ -6,9 +6,13 @@ const {
   createTodoForUser,
   updateTodo,
   deleteTodo,
-} = require("../../../../services/todos");
+} = require("../../../../services/todos.service");
 
 const router = Router();
+
+router.use((req, res, next) => {
+  req.user ? next() : res.send(401);
+});
 
 router.get("/", getTodos);
 

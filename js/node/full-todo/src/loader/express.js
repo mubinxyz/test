@@ -1,6 +1,11 @@
 const express = require("express");
+const cookieParser = require("cookie-parser");
+const session = require("express-session");
+const MongoStore = require("connect-mongo");
+const passport = require("passport");
 const routes = require("../api/routes");
-require("dotenv").config("../../.env");
+require("dotenv").config();
+require("../api/middlewares/strategies/local");
 const cors = require("cors");
 
 require("../database");
@@ -17,9 +22,24 @@ const expressLoader = async (app) => {
   });
 
   app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
+  app.use(cookieParser());
   app.use("/api", routes());
+  app.use(
+    session({
+      secret: "lajdhlkjdfafakjfald",
+      resave: false,
+      saveUninitialized: false,
+      store: MongoStore.create({
+        mongoUrl: "mongodb://localhost:27017/full-todo",
+      }),
+    })
+  );
 
-  PORT = process.env.PORT || 3000;
+  app.use(passport.initialize());
+  app.use(passport.session());
+
+  const PORT = process.env.PORT || 3000;
   app.listen(PORT, () => {
     console.log(`on port ${PORT}`);
   });

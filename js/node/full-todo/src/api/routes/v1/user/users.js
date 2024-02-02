@@ -5,7 +5,7 @@ const {
   findUser,
   createUser,
   deleteUser,
-} = require("../../../../services/users");
+} = require("../../../../services/users.service");
 
 const router = Router();
 
