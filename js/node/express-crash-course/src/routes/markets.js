@@ -2,6 +2,10 @@ const { Router } = require("express");
 
 const router = Router();
 
+router.use((req, res, next) => {
+  req.user ? next() : res.send(401);
+});
+
 const supermarkets = [
   {
     id: 1,
@@ -39,10 +43,9 @@ router.get("", (req, res) => {
   const { miles } = req.query;
   const parsedMiles = parseInt(miles);
   if (!isNaN(parsedMiles)) {
-    const filteredStores = supermarkets.filter(s => s.miles <= parsedMiles);
+    const filteredStores = supermarkets.filter((s) => s.miles <= parsedMiles);
     res.send(filteredStores);
   } else res.send(supermarkets);
-  
 });
 
 module.exports = router;

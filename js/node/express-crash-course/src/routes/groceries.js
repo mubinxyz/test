@@ -2,6 +2,10 @@ const { Router } = require("express");
 
 const router = Router();
 
+router.use((req, res, next) => {
+  req.user ? next() : res.send(401);
+});
+
 const groceryList = [
   {
     item: "milk",
@@ -14,7 +18,6 @@ const groceryList = [
 ];
 
 router.get("", (req, res) => {
-  
   res.send(groceryList);
 });
 
@@ -34,8 +37,8 @@ router.post("", (req, res) => {
 router.get("/shopping/cart", (req, res) => {
   const { cart } = req.session;
   if (!cart) {
-    res.send('You have no cart sessions')
-  } else res.send(cart)
+    res.send("You have no cart sessions");
+  } else res.send(cart);
 });
 
 router.post("/shopping/cart/item", (req, res) => {
@@ -47,7 +50,7 @@ router.post("/shopping/cart/item", (req, res) => {
   } else {
     req.session.cart = {
       items: [cartItem],
-    }
+    };
   }
 
   res.send(201);

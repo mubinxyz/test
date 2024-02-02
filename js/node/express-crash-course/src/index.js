@@ -24,8 +24,8 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
-      mongoUrl: 'mongodb://localhost:27017/expressjs_tutorial',
-    })
+      mongoUrl: "mongodb://localhost:27017/expressjs_tutorial",
+    }),
   })
 );
 
@@ -40,13 +40,8 @@ app.use((req, res, next) => {
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use("/api/v1/auth", authRoute);
-
-app.use((req, res, next) => {
-  req.user ? next() : res.send(401);
-});
-
 app.use("/api/v1/groceries", groceriesRoute);
 app.use("/api/v1/markets", marketsRoute);
+app.use("/api/v1/auth", authRoute);
 
 app.listen(PORT, () => console.log(`running epxress server on port ${PORT}`));

@@ -1,7 +1,7 @@
 const { Router } = require("express");
-const password = require("passport");
+const passport = require("passport");
 const User = require("../database/schemas/User");
-const { hashPassword, comparePassword } = require("../utils/helpers");
+const { hashPassword } = require("../utils/helpers");
 
 const router = Router();
 
@@ -23,7 +23,7 @@ const router = Router();
 // }
 // });
 
-router.post("/login", password.authenticate("local"), (req, res) => {
+router.post("/login", passport.authenticate("local"), (req, res) => {
   console.log("Logged in");
   res.send(200);
 });

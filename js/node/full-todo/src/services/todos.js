@@ -11,6 +11,30 @@ const getTodos = async (req, res) => {
   }
 };
 
+// const getUserTodos = async (req, res) => {
+//   const userId = req.params.userid;
+//   let todos; // Declare todos outside the try block
+
+//   try {
+//     todos = await Todo.find({
+//       where: {
+//         userId: userId,
+//       },
+//     });
+
+//     if (!todos || todos.length === 0) {
+//       res
+//         .status(404)
+//         .send({ msg: "User not found or no todos found for the user." });
+//     } else {
+//       res.status(200).send(todos);
+//     }
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send({ msg: "Internal server error" });
+//   }
+// };
+
 const getTodoById = async (req, res) => {
   try {
     const todoId = req.params.id;
@@ -89,6 +113,7 @@ const deleteTodo = async (req, res) => {
 module.exports = {
   getTodos,
   getTodoById,
+  // getUserTodos,
   createTodoForUser,
   updateTodo,
   deleteTodo,
