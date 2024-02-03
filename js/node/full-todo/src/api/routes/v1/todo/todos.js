@@ -2,8 +2,8 @@ const { Router } = require("express");
 
 const {
   getTodos,
-  getTodoById,
-  createTodoForUser,
+
+  createTodo,
   updateTodo,
   deleteTodo,
 } = require("../../../../services/todos.service");
@@ -11,14 +11,14 @@ const {
 const router = Router();
 
 router.use((req, res, next) => {
-  req.user ? next() : res.send(401);
+  console.log("Inside todos route");
+  console.log(req.user);
+  req.user ? next() : res.status(401).json({ error: "Unauthorized" });
 });
 
 router.get("/", getTodos);
 
-router.get("/:id", getTodoById);
-
-router.post("/:username", createTodoForUser);
+router.post("/", createTodo);
 
 router.put("/:id", updateTodo);
 
