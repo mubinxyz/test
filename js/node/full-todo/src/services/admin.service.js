@@ -6,7 +6,7 @@ const getAllTodos = async (req, res) => {
     const todos = await Todo.find();
     res.status(200).json(todos);
   } catch (error) {
-    if (!todos) res.status(404).json({ error: "No todos or server problem" });
+    if (!todos) res.status(404).json({ error: "todos not found" });
     console.log(error);
   }
 };

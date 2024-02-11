@@ -2,7 +2,6 @@ const { Router } = require("express");
 
 const {
   getTodos,
-
   createTodo,
   updateTodo,
   deleteTodo,
