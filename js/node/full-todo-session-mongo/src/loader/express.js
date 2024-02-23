@@ -27,10 +27,13 @@ const expressLoader = async (app) => {
     session({
       secret: process.env.SESSION_SECRET || "lajdhlkjdfafakjfald",
       resave: false,
-      saveUninitialized: false,
+      saveUninitialized: ture,
       store: MongoStore.create({
         mongoUrl: "mongodb://localhost:27017/full-todo",
       }),
+      cookie: {
+        maxAge: 1000 * 60 * 60 * 24,
+      },
     })
   );
   app.use(cookieParser());
