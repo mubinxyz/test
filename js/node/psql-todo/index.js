@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const dotenv = require("dotenv").config();
+require("dotenv").config();
 
 app.use(express.json());
 app.use("/api/v1/todos", require("./src/routes/todoRoutes"));

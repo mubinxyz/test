@@ -6,14 +6,16 @@ const queries = require("../db/queries");
 //@access private
 const getAllTodos = (req, res) => {
   pool.query(queries.getAllTodos, [parseInt(req.user.id)], (error, results) => {
+    console.log(req.user.id);
     if (error) throw error;
-    res.status.json(results.rows);
+    res.status(200).json(results.rows);
   });
 };
 
 //@desc Create new todo
 //@route POST /api/todos
 //@access private
+//! fix the due_date issue
 const createTodo = (req, res) => {
   const { title, description, due_date } = req.body;
 
@@ -27,10 +29,15 @@ const createTodo = (req, res) => {
       } else {
         const createdTodo = results.rows[0];
 
-        // associate the created todo with the user in user_tasks table
+        // Format due_date as 'YYYY-MM-DD'
+        const formattedDueDate =
+          createdTodo.due_date.toLocaleDateString("en-CA");
+        createdTodo.due_date = formattedDueDate;
+
+        // Associate the created todo with the user in user_tasks table
         pool.query(
           queries.associateTodoToUser,
-          [parseInt(req.user.id), createTodo.task_id],
+          [parseInt(req.user.id), parseInt(createdTodo.task_id)],
           (associationError, associationResults) => {
             if (associationError) {
               console.error(

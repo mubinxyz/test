@@ -2,24 +2,24 @@ const pool = require("../config/db");
 const queries = require("../db/queries");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const dotenv = require("dotenv").config();
+require("dotenv").config();
 
 //@desc Register a user
 //@route POST /api/users/register
 //@access public
 const registerUser = (req, res) => {
-  const { username, email, password } = req.body;
-  if (!username || !email || !password) {
+  const { username, password } = req.body;
+  if (!username || !password) {
     res.status(400);
     throw new Error("All fields are mandatory");
   }
 
-  pool.query(queries.findUserByUsername, [username], (error, results) => {
+  pool.query(queries.findUserByUsername, [username], async (error, results) => {
     if (results.rows[0]) {
       res.send("user already registered");
     }
 
-    const password_hash = bcrypt.hash(password, 10);
+    const password_hash = await bcrypt.hash(password, 10);
 
     pool.query(
       queries.registerUser,
@@ -64,7 +64,7 @@ const loginUser = (req, res) => {
             },
           },
           process.env.ACCESS_TOKEN_SECRET,
-          { expiresIn: "24h" }
+          { expiresIn: "1d" }
         );
 
         res.status(200).json({ accessToken });
