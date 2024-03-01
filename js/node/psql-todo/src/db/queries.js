@@ -25,8 +25,10 @@ const getTodoById = `
 const updateTodo = `
   UPDATE tasks
   SET title = $3, description = $4, due_date = $5, completed = $6
-  WHERE task_id = $1 AND user_id = $2
-  RETURNING *;
+  FROM user_tasks
+  WHERE tasks.task_id = user_tasks.task_id
+    AND user_tasks.user_id = $2
+    AND tasks.task_id = $1
 `;
 
 const deleteTodo = `

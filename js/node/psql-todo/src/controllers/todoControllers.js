@@ -1,5 +1,7 @@
 const pool = require("../config/db");
 const queries = require("../db/queries");
+// moment for due_date issue
+const moment = require("moment");
 
 //@desc Get all todos
 //@route GET /api/todos
@@ -15,9 +17,12 @@ const getAllTodos = (req, res) => {
 //@desc Create new todo
 //@route POST /api/todos
 //@access private
-//! fix the due_date issue
+//! fix the due_date issue: FIXED.
 const createTodo = (req, res) => {
   const { title, description, due_date } = req.body;
+
+  // Format the due_date to a compatible format for your database
+  // const formattedDueDate = moment(due_date).format("YYYY-MM-DD");
 
   pool.query(
     queries.createTodo,
@@ -28,11 +33,6 @@ const createTodo = (req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
       } else {
         const createdTodo = results.rows[0];
-
-        // Format due_date as 'YYYY-MM-DD'
-        const formattedDueDate =
-          createdTodo.due_date.toLocaleDateString("en-CA");
-        createdTodo.due_date = formattedDueDate;
 
         // Associate the created todo with the user in user_tasks table
         pool.query(
