@@ -1,7 +1,7 @@
 const pool = require("../config/db");
 const queries = require("../db/queries");
 // moment for due_date issue
-const moment = require("moment");
+// const moment = require("moment");
 
 //@desc Get all todos
 //@route GET /api/todos
@@ -9,7 +9,7 @@ const moment = require("moment");
 const getAllTodos = (req, res) => {
   pool.query(queries.getAllTodos, [parseInt(req.user.id)], (error, results) => {
     console.log(req.user.id);
-    if (error) throw error;
+    if (error) throw new Error(error);
     res.status(200).json(results.rows);
   });
 };
@@ -50,7 +50,6 @@ const createTodo = (req, res) => {
                 msg: "Todo created for user successfully!",
                 todo: createdTodo,
               });
-              console.log("Todo created for user successfully");
             }
           }
         );

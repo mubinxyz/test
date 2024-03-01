@@ -17,19 +17,19 @@ const registerUser = (req, res) => {
   pool.query(queries.findUserByUsername, [username], async (error, results) => {
     if (results.rows[0]) {
       res.send("user already registered");
+    } else {
+      const password_hash = await bcrypt.hash(password, 10);
+
+      pool.query(
+        queries.registerUser,
+        [username, password_hash],
+        (error, results) => {
+          if (error) throw error;
+          console.error(error);
+          res.status(201).json({ msg: "user registered successfully." });
+        }
+      );
     }
-
-    const password_hash = await bcrypt.hash(password, 10);
-
-    pool.query(
-      queries.registerUser,
-      [username, password_hash],
-      (error, results) => {
-        if (error) throw error;
-        console.error(error);
-        res.status(201).json({ msg: "user registered successfully." });
-      }
-    );
   });
 };
 
