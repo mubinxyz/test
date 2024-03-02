@@ -76,7 +76,7 @@ const updateTodo = asyncHandler(async (req, res) => {
   }
 
   const updatedTodo = await prisma.task.update({
-    where: { id: parseInt(req.params.id), userId: req.user.id },
+    where: { id: req.params.id, userId: req.user.id },
     data: {
       title: title || todo.title,
       description: description || todo.description,
@@ -85,9 +85,28 @@ const updateTodo = asyncHandler(async (req, res) => {
     },
   });
 
-  res.status(200).json({ msg: "Todo updated successfully.", todo: updateTodo });
+  res
+    .status(200)
+    .json({ msg: "Todo updated successfully.", todo: updatedTodo });
 });
 
 //@desc Delete a todos
 //@route DELETE /api/todos/:id
 //@access private
+const deleteTodo = asyncHandler(async (req, res) => {
+  const deletedTodo = await prisma.task.delete({
+    where: {
+      todoId: req.params.id,
+      userId: req.user.id,
+    },
+  });
+
+  if (!deletedTodo) {
+    res.status(404);
+    throw new Error("user not found");
+  }
+
+  res
+    .status(200)
+    .json({ msg: "todo deleted successfully.", deleted: deletedTodo });
+});
