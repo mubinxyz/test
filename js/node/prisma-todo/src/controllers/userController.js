@@ -76,9 +76,22 @@ const loginUser = asyncHandler(async (req, res) => {
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "1d" }
     );
+    res.status(200).json(accessToken);
+  } else {
+    res.status(401);
+    throw new Error("email or passwrod is not valid");
   }
 });
 
 //@desc Current user information
 //@route POST /api/users/current
 //@access private
+const currentUser = asyncHandler(async (req, res) => {
+  res.json(req.user);
+});
+
+module.exports = {
+  registerUser,
+  loginUser,
+  currentUser,
+};
