@@ -61,6 +61,32 @@ const getTodoById = asyncHandler(async (req, res) => {
 //@desc Update a todos
 //@route UPDATE /api/todos/:id
 //@access private
+const updateTodo = asyncHandler(async (req, res) => {
+  const { title, description, due_date, completed } = req.body;
+
+  // if not changed, just wirte default
+  const todo = await prisma.task.findUnique({
+    id: req.params.id,
+    userId: req.user.id,
+  });
+
+  if (!todo) {
+    res.status(404);
+    throw new Error("Todo not found");
+  }
+
+  const updatedTodo = await prisma.task.update({
+    where: { id: parseInt(req.params.id), userId: req.user.id },
+    data: {
+      title: title || todo.title,
+      description: description || todo.description,
+      due_date: due_date || todo.due_date,
+      completed: completed || todo.completed,
+    },
+  });
+
+  res.status(200).json({ msg: "Todo updated successfully.", todo: updateTodo });
+});
 
 //@desc Delete a todos
 //@route DELETE /api/todos/:id
