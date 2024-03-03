@@ -58,7 +58,7 @@ const loginUser = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("All fields are mandatory");
   }
-  const user = prisma.user.findUnique({
+  const user = await prisma.user.findUnique({
     where: {
       username,
     },
