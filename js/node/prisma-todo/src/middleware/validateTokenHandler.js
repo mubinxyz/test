@@ -1,19 +1,18 @@
 const jwt = require("jsonwebtoken");
+const asyncHandler = require("express-async-handler");
 require("dotenv").config();
 
-const validateToken = async (req, res, next) => {
+const validateToken = asyncHandler(async (req, res, next) => {
   const authHeader = req.headers.authorization || req.headers.Authorization;
 
   if (!authHeader) {
     res.status(401);
     throw new Error("User is not authorized. Token is missing.");
-    return;
   }
 
   if (!authHeader.startsWith("Bearer")) {
     res.status(401);
     throw new Error("Invalid authorization format. Use 'Bearer' prefix.");
-    return;
   }
 
   const token = authHeader.split(" ")[1];
@@ -26,6 +25,6 @@ const validateToken = async (req, res, next) => {
     res.status(401);
     throw new Error("User is not authorized. Invalid token.");
   }
-};
+});
 
 module.exports = validateToken;

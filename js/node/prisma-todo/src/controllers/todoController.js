@@ -1,5 +1,5 @@
 const asyncHandler = require("express-async-handler");
-import { PrismaClient } from "@prisma/client";
+const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 //@desc Get all todos
@@ -21,7 +21,7 @@ const getAllTodos = asyncHandler(async (req, res) => {
 const createTodo = asyncHandler(async (req, res) => {
   const { title, description, due_date, completed } = req.body;
 
-  if (!title || !userId) {
+  if (!title) {
     res.status(400);
     throw new Error("all fields are mandatory");
   }
@@ -110,3 +110,11 @@ const deleteTodo = asyncHandler(async (req, res) => {
     .status(200)
     .json({ msg: "todo deleted successfully.", deleted: deletedTodo });
 });
+
+module.exports = {
+  getAllTodos,
+  createTodo,
+  getTodoById,
+  updateTodo,
+  deleteTodo,
+};

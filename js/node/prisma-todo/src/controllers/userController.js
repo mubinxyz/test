@@ -1,4 +1,5 @@
-import { PrismaClient } from "@prisma/client";
+// import { PrismaClient } from "@prisma/client";
+const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcrypt");
@@ -76,7 +77,7 @@ const loginUser = asyncHandler(async (req, res) => {
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "1d" }
     );
-    res.status(200).json(accessToken);
+    res.status(200).json({ accesstoken: accessToken });
   } else {
     res.status(401);
     throw new Error("email or passwrod is not valid");
