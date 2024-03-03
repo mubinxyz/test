@@ -1,6 +1,8 @@
 const asyncHandler = require("express-async-handler");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+// for due_date format
+const { formatISO } = require("date-fns");
 
 //@desc Get all todos
 //@route GET /api/todos
@@ -66,8 +68,10 @@ const updateTodo = asyncHandler(async (req, res) => {
 
   // if not changed, just wirte default
   const todo = await prisma.task.findUnique({
-    id: req.params.id,
-    userId: req.user.id,
+    where: {
+      id: parseInt(req.params.id),
+      userId: req.user.id,
+    },
   });
 
   if (!todo) {
@@ -76,11 +80,11 @@ const updateTodo = asyncHandler(async (req, res) => {
   }
 
   const updatedTodo = await prisma.task.update({
-    where: { id: req.params.id, userId: req.user.id },
+    where: { id: parseInt(req.params.id), userId: req.user.id },
     data: {
       title: title || todo.title,
       description: description || todo.description,
-      due_date: due_date || todo.due_date,
+      due_date: formatISO(new Date(due_date)) || todo.due_date,
       completed: completed || todo.completed,
     },
   });
