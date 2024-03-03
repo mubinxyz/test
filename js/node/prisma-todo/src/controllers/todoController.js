@@ -32,7 +32,7 @@ const createTodo = asyncHandler(async (req, res) => {
     data: {
       title,
       description,
-      due_date,
+      due_date: formatISO(new Date(due_date)),
       completed,
       userId: req.user.id,
     },
@@ -45,10 +45,10 @@ const createTodo = asyncHandler(async (req, res) => {
 //@route GET /api/todos/:id
 //@access private
 const getTodoById = asyncHandler(async (req, res) => {
-  const todoId = req.params.id;
   const todo = await prisma.task.findUnique({
     where: {
-      AND: [{ id: todoId }, { userId: req.user.id }],
+      id: parseInt(req.params.id),
+      userId: req.user.id,
     },
   });
 
@@ -100,7 +100,7 @@ const updateTodo = asyncHandler(async (req, res) => {
 const deleteTodo = asyncHandler(async (req, res) => {
   const deletedTodo = await prisma.task.delete({
     where: {
-      todoId: req.params.id,
+      id: parseInt(req.params.id),
       userId: req.user.id,
     },
   });
