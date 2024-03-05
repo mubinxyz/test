@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 // for due_date format
 const { formatISO } = require("date-fns");
 
-//@desc Get all todos
+//@desc Get all todos by user
 //@route GET /api/todos
 //@access private
 const getAllTodos = asyncHandler(async (req, res) => {
@@ -32,7 +32,7 @@ const createTodo = asyncHandler(async (req, res) => {
     data: {
       title,
       description,
-      due_date: formatISO(new Date(due_date)),
+      due_date: due_date ? formatISO(new Date(due_date)) : due_date,
       completed,
       userId: req.user.id,
     },

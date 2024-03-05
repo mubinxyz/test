@@ -16,7 +16,7 @@ config({ path: envPath });
 const prisma = new PrismaClient();
 
 async function main() {
-  // await prisma.user.deleteMany();
+  // await prisma.task.deleteMany();
 }
 
 main()
