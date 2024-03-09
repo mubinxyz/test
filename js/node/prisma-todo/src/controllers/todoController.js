@@ -84,7 +84,7 @@ const updateTodo = asyncHandler(async (req, res) => {
     data: {
       title: title || todo.title,
       description: description || todo.description,
-      due_date: formatISO(new Date(due_date)) || todo.due_date,
+      due_date: formatISO(new Date(due_date)) || todo.due_date, //! fix
       completed: completed || todo.completed,
     },
   });

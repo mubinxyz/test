@@ -1,3 +1,4 @@
 /node_modules
 .env
 generateKeyPair.js
+/src/prisma/script.mjs

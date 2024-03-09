@@ -1,0 +1,5 @@
+-- AlterEnum
+ALTER TYPE "Role" ADD VALUE 'SUPERADMIN';
+
+-- AlterTable
+ALTER TABLE "Task" ALTER COLUMN "due_date" SET DEFAULT CURRENT_DATE + INTERVAL '1 day';

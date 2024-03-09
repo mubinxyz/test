@@ -30,4 +30,5 @@ model Task {
 enum Role {
   BASIC
   ADMIN
+  SUPERADMIN
 }
