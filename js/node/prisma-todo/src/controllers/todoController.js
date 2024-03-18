@@ -21,7 +21,8 @@ const getAllTodos = asyncHandler(async (req, res) => {
 //@route POST /api/todos
 //@access private
 const createTodo = asyncHandler(async (req, res) => {
-  const { title, description, due_date, completed } = req.body;
+  const { title, description, due_date, completed } =
+    req.validatedCreateTodoData;
 
   if (!title) {
     res.status(400);

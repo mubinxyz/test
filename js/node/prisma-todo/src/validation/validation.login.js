@@ -6,6 +6,7 @@ const loginSchema = Joi.object({
   password: Joi.string().required(),
 });
 
+// Validation middleware function
 const validateLogin = asyncHandler((req, res, next) => {
   const { error, value } = loginSchema.validate(req.body);
 

@@ -7,7 +7,7 @@ const registerSchema = Joi.object({
   role: Joi.string().valid("BASIC", "ADMIN", "SUPERADMIN").default("BASIC"),
 });
 
-// Joi validation middlware
+// Validation middleware function
 const validateRegistration = asyncHandler((req, res, next) => {
   const { error, value } = registerSchema.validate(req.body);
 
