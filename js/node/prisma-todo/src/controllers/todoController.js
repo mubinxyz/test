@@ -48,7 +48,7 @@ const createTodo = asyncHandler(async (req, res) => {
 const getTodoById = asyncHandler(async (req, res) => {
   const todo = await prisma.task.findUnique({
     where: {
-      id: parseInt(req.req.validatedTodoIdForGet),
+      id: parseInt(req.validatedTodoIdForGet),
       userId: req.user.id,
     },
   });

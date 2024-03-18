@@ -12,7 +12,7 @@ const validateGetTodoById = (req, res, next) => {
     return res.status(400).json({ error: error.details[0].message });
   }
 
-  req.validatedTodoIdForGet = value;
+  req.validatedTodoIdForGet = value.id;
   next();
 };
 

@@ -15,7 +15,7 @@ const validateCreateTodo = (req, res, next) => {
     return res.status(400).json({ error: error.details[0].message });
   }
 
-  req.validatedCreateTodo = value;
+  req.validatedCreateTodoData = value;
   next();
 };
 
