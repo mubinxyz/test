@@ -1,5 +1,4 @@
 const Joi = require("joi");
-const asyncHandler = require("express-async-handler");
 
 const loginSchema = Joi.object({
   username: Joi.string().required(),
@@ -7,7 +6,7 @@ const loginSchema = Joi.object({
 });
 
 // Validation middleware function
-const validateLogin = asyncHandler((req, res, next) => {
+const validateLogin = (req, res, next) => {
   const { error, value } = loginSchema.validate(req.body);
 
   if (error) {
@@ -17,7 +16,7 @@ const validateLogin = asyncHandler((req, res, next) => {
   req.validatedLoginData = value;
 
   next();
-});
+};
 
 module.exports = {
   validateLogin,

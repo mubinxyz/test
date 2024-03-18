@@ -48,7 +48,7 @@ const createTodo = asyncHandler(async (req, res) => {
 const getTodoById = asyncHandler(async (req, res) => {
   const todo = await prisma.task.findUnique({
     where: {
-      id: parseInt(req.params.id),
+      id: parseInt(req.req.validatedTodoIdForGet),
       userId: req.user.id,
     },
   });
@@ -65,7 +65,8 @@ const getTodoById = asyncHandler(async (req, res) => {
 //@route UPDATE /api/todos/:id
 //@access private
 const updateTodo = asyncHandler(async (req, res) => {
-  const { title, description, due_date, completed } = req.body;
+  const { title, description, due_date, completed } =
+    req.validatedUpdateTodoData;
 
   // if not changed, just wirte default
   const todo = await prisma.task.findUnique({
@@ -83,10 +84,10 @@ const updateTodo = asyncHandler(async (req, res) => {
   const updatedTodo = await prisma.task.update({
     where: { id: parseInt(req.params.id), userId: req.user.id },
     data: {
-      title: title || todo.title,
-      description: description || todo.description,
-      due_date: formatISO(new Date(due_date)) || todo.due_date, //! fix
-      completed: completed || todo.completed,
+      title: title ?? todo.title,
+      description: description ?? todo.description,
+      due_date: due_date ? formatISO(new Date(due_date)) : todo.due_date,
+      completed: completed ?? todo.completed,
     },
   });
 
@@ -101,7 +102,7 @@ const updateTodo = asyncHandler(async (req, res) => {
 const deleteTodo = asyncHandler(async (req, res) => {
   const deletedTodo = await prisma.task.delete({
     where: {
-      id: parseInt(req.params.id),
+      id: parseInt(req.validatedTodoIdForDelete),
       userId: req.user.id,
     },
   });
